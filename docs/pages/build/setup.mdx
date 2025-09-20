@@ -1,192 +1,219 @@
----
-title: Create your first build
-description: Learn how to create a build for your app with EAS Build.
----
 
-import { Collapsible } from '~/ui/components/Collapsible';
-import { Terminal } from '~/ui/components/Snippet';
-import { Step } from '~/ui/components/Step';
-import { Tabs, Tab } from '~/ui/components/Tabs';
-import { A } from '~/ui/components/Text';
+// Protótipo interativo: Conexão de Energia Inteligente-SAP// Arquivo React de exemplo (Tailwind CSS) // Este componente funciona como um protótipo UI de alta fidelidade para apresentação. // Inclui telas: Dashboard, Carteira (Wallet), Localizar Postos, Gestão de Frotas, Marketplace, Relatórios e Suporte (Chat). // Observação: Dados mock; este arquivo foi criado para visualização e interação rápida.
+
+import React, { useState } from "react";
+
+export default function PrototipoConexãodeEnergiaInteligente-SAP() { const tabs = [ "Dashboard", "Carteira", "Localizar", "Frotas", "Marketplace", "Relatórios", "Suporte", ];
+
+const [active, setActive] = useState("Dashboard");
+
+// Dados de exemplo const stations = [ { id: 1, name: "Posto Central - Luanda", fuel: "Gasolina", price: 300,00, green: true, dist: "1.2 km" }, { id: 2, name: "Posto Norte - Cacuaco", fuel: "Diesel", price: 400,00, green: false, dist: "8.4 km" }, { id: 3, name: "Posto Sul - Talatona", fuel: "Gás Natural", price: 1.200,00, green: true, dist: "12 km" }, ];
+
+const fleet = [ { id: "F001", name: "Camião 1", odometer: 120000, fuelAvg: 9.4, status: "OK" }, { id: "F002", name: "Pick-up 3", odometer: 45000, fuelAvg: 7.8, status: "Manutenção" }, ];
+
+const wallet = { balance: 12500.50, currency: "AOA", points: 1080 };
+
+return ( <div className="min-h-screen flex bg-gray-50 text-gray-900"> {/* Sidebar */} <aside className="w-72 bg-white border-r shadow-sm p-6"> <h1 className="text-2xl font-bold text-slate-800">Smart Energy Connect</h1> <p className="text-sm text-gray-500 mt-1">Protótipo para Sonangol</p>
+
+<nav className="mt-6 space-y-2">
+      {tabs.map((t) => (
+        <button
+          key={t}
+          onClick={() => setActive(t)}
+          className={`w-full text-left px-3 py-2 rounded-md transition-all ${
+            active === t
+              ? "bg-sky-500 text-white shadow"
+              : "text-gray-700 hover:bg-gray-100"
+          }`}
+        >
+          {t}
+        </button>
+      ))}
+    </nav>
+
+    <div className="mt-6 border-t pt-4 text-sm text-gray-600">
+      <div className="mb-2">Usuário: <strong>Empresa X</strong></div>
+      <div>Status: <span className="text-green-600 font-medium">Ativo</span></div>
+      <div className="mt-3">
+        <button className="px-3 py-2 bg-slate-100 rounded text-sm">Configurações</button>
+      </div>
+    </div>
+  </aside>
+
+  {/* Main area */}
+  <main className="flex-1 p-8">
+    <header className="flex items-center justify-between mb-6">
+      <div>
+        <h2 className="text-2xl font-semibold">{active}</h2>
+        <p className="text-sm text-gray-500 mt-1">Protótipo navegável — dados mock</p>
+      </div>
+      <div className="flex items-center gap-4">
+        <div className="text-sm text-right">
+          <div className="text-gray-600">Saldo (carteira)</div>
+          <div className="font-semibold text-lg">{wallet.currency} {wallet.balance.toLocaleString()}</div>
+        </div>
+        <div className="w-10 h-10 bg-sky-500 rounded-full flex items-center justify-center text-white font-bold">SE</div>
+      </div>
+    </header>
+
+    <section>
+      {active === "Dashboard" && (
+        <Dashboard stations={stations} fleet={fleet} wallet={wallet} />
+      )}
+
+      {active === "Carteira" && <Carteira wallet={wallet} />}
+
+      {active === "Localizar" && <Localizar stations={stations} />}
+
+      {active === "Frotas" && <Frotas fleet={fleet} />}
+
+      {active === "Marketplace" && <Marketplace />}
+
+      {active === "Relatórios" && <Relatorios />}
+
+      {active === "Suporte" && <Suporte />}
+    </section>
+  </main>
+</div>
+
+); }
+
+/* ---------- Componentes de cada tela (simplificados para protótipo) ---------- */
+
+function Dashboard({ stations, fleet, wallet }) { return ( <div className="space-y-6"> <div className="grid grid-cols-3 gap-6"> <Card title="Postos próximos"> {stations.map((s) => ( <div key={s.id} className="flex items-center justify-between py-2"> <div> <div className="font-medium">{s.name}</div> <div className="text-xs text-gray-500">{s.fuel} • {s.dist}</div> </div> <div className="text-sm text-gray-700">{s.price} $</div> </div> ))} </Card>
+
+<Card title="Status da Frota">
+      <ul className="space-y-2">
+        {fleet.map((v) => (
+          <li key={v.id} className="flex justify-between">
+            <div>
+              <div className="font-medium">{v.name}</div>
+              <div className="text-xs text-gray-500">OD: {v.odometer} km</div>
+            </div>
+            <div className={`text-sm font-semibold ${v.status === 'OK' ? 'text-green-600' : 'text-amber-600'}`}>{v.status}</div>
+          </li>
+        ))}
+      </ul>
+    </Card>
+
+    <Card title="Engajamento & Sustentabilidade">
+      <div className="text-sm text-gray-600">Pontos acumulados: <strong>1.080</strong></div>
+      <div className="mt-3 text-sm text-gray-600">CO₂ evitado (estimado): <strong>12 tCO₂</strong></div>
+      <div className="mt-4">
+        <button className="px-3 py-2 bg-sky-500 text-white rounded">Ver oportunidades verdes</button>
+      </div>
+    </Card>
+  </div>
+
+  <div className="grid grid-cols-2 gap-6">
+    <Card title="Mapa Operacional">
+      <div className="h-72 bg-gradient-to-br from-white to-gray-100 rounded border flex items-center justify-center text-gray-400">
+        [Mapa interativo - placeholder]
+      </div>
+    </Card>
+
+    <Card title="Resumo Financeiro">
+      <div className="space-y-2">
+        <div>Receita digital mensal: <strong>+15%</strong></div>
+        <div>Economia média por frota: <strong>18%</strong></div>
+        <div>Usuários ativos (Mês): <strong>42k</strong></div>
+      </div>
+    </Card>
+  </div>
+</div>
+
+); }
+
+function Carteira({ wallet }) { const tx = [ { id: 1, label: "Abastecimento Posto Central", value: -4500, date: '2025-09-01' }, { id: 2, label: "Recarga PTS", value: -1200, date: '2025-08-28' }, { id: 3, label: "Crédito recebido", value: 5000, date: '2025-08-15' }, ];
+
+return ( <div className="grid grid-cols-3 gap-6"> <Card title="Saldo"> <div className="text-3xl font-bold">AOA {wallet.balance.toLocaleString()}</div> <div className="text-sm text-gray-500 mt-2">Pontos: {wallet.points}</div> <div className="mt-4"> <button className="px-3 py-2 bg-green-600 text-white rounded">Adicionar fundos</button> </div> </Card>
+
+<Card title="Transações recentes" className="col-span-2">
+    <ul className="space-y-3">
+      {tx.map((t) => (
+        <li key={t.id} className="flex justify-between">
+          <div>
+            <div className="font-medium">{t.label}</div>
+            <div className="text-xs text-gray-500">{t.date}</div>
+          </div>
+          <div className={`font-semibold ${t.value < 0 ? 'text-red-600' : 'text-green-600'}`}>{t.value < 0 ? '-' : '+'} AOA {Math.abs(t.value).toLocaleString()}</div>
+        </li>
+      ))}
+    </ul>
+  </Card>
+</div>
+
+); }
+
+function Localizar({ stations }) { return ( <div className="grid grid-cols-2 gap-6"> <Card title="Mapa de Postos"> <div className="h-96 bg-gray-100 rounded flex items-center justify-center text-gray-400">[Mapa interativo - placeholder]</div> </Card>
+
+<Card title="Lista de Postos">
+    <div className="space-y-3">
+      {stations.map((s) => (
+        <div key={s.id} className="p-3 border rounded flex justify-between items-center">
+          <div>
+            <div className="font-medium">{s.name}</div>
+            <div className="text-xs text-gray-500">{s.fuel} • {s.green ? 'Posto Verde' : 'Convencional'}</div>
+          </div>
+          <div className="text-right">
+            <div className="font-semibold">{s.price} $</div>
+            <div className="text-xs text-gray-500">{s.dist}</div>
+            <div className="mt-2">
+              <button className="px-2 py-1 bg-sky-500 text-white rounded text-xs">Navegar</button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </Card>
+</div>
+
+); }
+
+function Frotas({ fleet }) { return ( <div className="space-y-6"> <Card title="Visão Geral da Frota"> <table className="w-full text-sm"> <thead className="text-left text-gray-600"> <tr><th>Veículo</th><th>OD</th><th>Consumo (L/100km)</th><th>Status</th></tr> </thead> <tbody> {fleet.map((v) => ( <tr key={v.id} className="border-t"> <td className="py-2">{v.name}</td> <td>{v.odometer} km</td> <td>{v.fuelAvg}</td> <td className={${v.status==='OK' ? 'text-green-600' : 'text-amber-600'}}>{v.status}</td> </tr> ))} </tbody> </table> </Card>
+
+<Card title="Alertas de Manutenção">
+    <ul className="space-y-3 text-sm text-gray-700">
+      <li>Pick-up 3: Trocar óleo (vencido)</li>
+      <li>Camião 1: Pneus - verificação</li>
+    </ul>
+  </Card>
+</div>
+
+); }
+
+function Marketplace() { const offers = [ { id: 1, title: 'Óleo lubrificante - 5L', price: '2.500 AOA' }, { id: 2, title: 'Check-up rápido', price: '5.000 AOA' }, { id: 3, title: 'Carregamento EV - 50kWh', price: '10.000 AOA' }, ];
+
+return ( <div className="grid grid-cols-3 gap-6"> {offers.map(o => ( <div key={o.id} className="p-4 border rounded bg-white"> <div className="font-medium">{o.title}</div> <div className="text-sm text-gray-500">{o.price}</div> <div className="mt-3"> <button className="px-3 py-2 bg-sky-500 text-white rounded">Comprar</button> </div> </div> ))} </div> ); }
+
+function Relatorios() { return ( <div className="grid grid-cols-2 gap-6"> <Card title="Relatório Emissões"> <div className="text-sm text-gray-700">CO₂ evitado: <strong>12 tCO₂</strong></div> <div className="mt-3 text-sm text-gray-500">Comparado ao mês anterior: <strong>-4%</strong></div> </Card>
+
+<Card title="Relatório Financeiro">
+    <div className="text-sm">Receita digital: <strong>+15%</strong></div>
+    <div className="mt-2 text-sm text-gray-500">Transações (mês): <strong>8.200</strong></div>
+  </Card>
+</div>
+
+); }
+
+function Suporte() { const [messages, setMessages] = useState([ { from: 'bot', text: 'Olá! Como posso ajudar?' }, ]); const [txt, setTxt] = useState('');
+
+function send() { if (!txt) return; setMessages(m => [...m, { from: 'user', text: txt }]); setTxt(''); setTimeout(() => { setMessages(m => [...m, { from: 'bot', text: 'Obrigado — vamos verificar e responder em breve.' }]); }, 800); }
+
+return ( <div className="grid grid-cols-3 gap-6"> <div className="col-span-2"> <Card title="Chat de Suporte"> <div className="h-72 overflow-auto p-3 bg-gray-50 rounded"> {messages.map((m, i) => ( <div key={i} className={mb-3 ${m.from === 'user' ? 'text-right' : 'text-left'}}> <div className={${m.from === 'user' ? 'inline-block bg-sky-500 text-white' : 'inline-block bg-white border'} rounded px-3 py-2}>{m.text}</div> </div> ))} </div> <div className="mt-3 flex gap-2"> <input value={txt} onChange={e => setTxt(e.target.value)} className="flex-1 px-3 py-2 border rounded" placeholder="Escreva sua mensagem..." /> <button onClick={send} className="px-4 py-2 bg-sky-500 text-white rounded">Enviar</button> </div> </Card> </div>
+
+<Card title="Artigos rápidos" className="h-fit">
+    <ul className="text-sm space-y-2">
+      <li><strong>FAQ:</strong> Como usar a carteira?</li>
+      <li><strong>Guia:</strong> Como instalar um carregador EV?</li>
+      <li><strong>Contato:</strong> suporte@sonangol.co.ao</li>
+    </ul>
+  </Card>
+</div>
+
+); }
+
+/* ---------- Pequeno componente Card para layout ---------- */ function Card({ title, children, className = '' }) { return ( <div className={bg-white p-4 rounded shadow-sm border ${className}}> {title && <div className="font-semibold mb-3">{title}</div>} <div>{children}</div> </div> ); }
+
+/* Fim do arquivo de protótipo */
 
-EAS Build allows you to build a ready-to-submit binary of your app for the Google Play Store or Apple App Store. In this guide, let's learn how to do that.
-
-Alternatively, if you prefer to install the app directly to your Android device/emulator or install it in the iOS Simulator, we will point you toward resources that explain how to do that.
-
-For a small app, builds for Android and iOS platforms trigger within a few minutes. If you encounter any issues along the way, you can reach out on <A href="https://chat.expo.dev/" shouldLeakReferrer>Discord and Forums</A>.
-
-## Prerequisites
-
-EAS Build is a rapidly evolving service. Before you set out to create a build for your project we recommend consulting the [limitations](/build-reference/limitations) page and the other prerequisites below.
-
-<Collapsible summary="A React Native Android and/or iOS project that you want to build">
-
-Don't have a project yet? No problem. It's quick and easy to create a "Hello world" app that you can use with this guide.
-
-Run the following command to create a new project:
-
-<Terminal cmd={['$ npx create-expo-app my-app']} />
-
-EAS Build also works well with projects created by `npx create-react-native-app`, `npx react-native`, `ignite-cli`, and other project bootstrapping tools.
-
-</Collapsible>
-
-<Collapsible summary="An Expo user account">
-
-EAS Build is available to anyone with an Expo account, regardless of whether you pay for EAS or use our Free plan. You can sign up at [https://expo.dev/signup](https://expo.dev/signup).
-
-Paid subscribers get quality improvements such as additional build concurrencies, priority access to minimize the time your builds spend queueing, and increased limits on build timeouts. Learn more about different plans and benefits at [EAS pricing](https://expo.dev/pricing).
-
-</Collapsible>
-
-<Step label="1">
-## Install the latest EAS CLI
-
-EAS CLI is the command-line app that you will use to interact with EAS services from your terminal. To install it, run the command:
-
-<Terminal cmd={['$ npm install -g eas-cli']} />
-
-You can also use the above command to check if a new version of EAS CLI is available. We encourage you to always stay up to date with the latest version.
-
-> We recommend using `npm` instead of `yarn` for global package installations. You may alternatively use `npx eas-cli@latest`. Remember to use that instead of `eas` whenever it's called for in the documentation.
-
-</Step>
-
-<Step label="2">
-## Log in to your Expo account
-
-If you are already signed in to an Expo account using Expo CLI, you can skip the steps described in this section. If you are not, run the following command to log in:
-
-<Terminal cmd={['$ eas login']} />
-
-You can check whether you are logged in by running `eas whoami`.
-
-</Step>
-
-<Step label="3">
-## Configure the project
-
-To configure an Android or an iOS project for EAS Build, run the following command:
-
-<Terminal cmd={['$ eas build:configure']} />
-
-To learn more about what happens behind the scenes, see [build configuration process reference](/build-reference/build-configuration).
-
-For development, we recommend creating a [development build](/develop/development-builds/introduction/), which is a debug build of your app and contains the [`expo-dev-client`](/versions/latest/sdk/dev-client/) library. It helps you iterate as quickly as possible and provides a more flexible, reliable, and complete development environment. To install the library, run the following command:
-
-<Terminal cmd={['$ npx expo install expo-dev-client']} />
-
-Additional configuration may be required for some scenarios:
-
-- Does your app code depend on environment variables? [Add them to your build configuration](/build-reference/variables).
-- Is your project inside of a monorepo? [Follow these instructions](/build-reference/build-with-monorepos).
-- Do you use private npm packages? [Add your npm token](/build-reference/private-npm-packages).
-- Does your app depend on specific versions of tools like Node, Yarn, npm, CocoaPods, or Xcode? [Specify these versions in your build configuration](/build/eas-json).
-
-</Step>
-
-<Step label="4">
-## Run a build
-
-### Build for Android Emulator/device or iOS Simulator
-
-The easiest way to try out EAS Build is to create a build that you can run on your Android device/emulator or iOS Simulator. It's quicker than uploading it to a store, and you don't need store developer membership accounts. If you'd like to try this, read about [creating an installable APK for Android](/tutorial/eas/android-development-build/) and [creating a simulator build for iOS](/tutorial/eas/ios-development-build-for-simulators/).
-
-### Build for app stores
-
-Before the build process can start for app stores, you will need to have a store developer account and generate or provide app signing credentials.
-
-Whether you have experience with generating app signing credentials or not, EAS CLI does the heavy lifting. You can opt-in for EAS CLI to handle the app signing credentials process. Check out the steps for [Android app signing credentials](#android-app-signing-credentials) or [iOS app signing credentials](#ios-app-signing-credentials) process below for more information.
-
-<Collapsible summary="Google Play Developer membership is required to distribute to the Google Play Store.">
-
-You can build and sign your app using EAS Build, but you can't upload it to the Google Play Store unless you have a membership, a one-time $25 USD fee.
-
-</Collapsible>
-
-<Collapsible summary="Apple Developer Program membership is required to build for the Apple App Store.">
-
-If you are going to use EAS Build to create release builds for the Apple App Store, you need access to an account with a $99 USD [Apple Developer Program](https://developer.apple.com/programs) membership.
-
-</Collapsible>
-
-After you have confirmed that you have a Google Play Store or Apple App Store account and decided whether or not EAS CLI should handle app signing credentials, you can proceed with the following set of commands to build for the platform's store:
-
-<Tabs tabs={['Android', 'iOS']}>
-  <Tab>
-    <Terminal cmd={['$ eas build --platform android']} />
-  </Tab>
-  <Tab>
-    <Terminal cmd={['$ eas build --platform ios']} />
-  </Tab>
-</Tabs>
-
-> You can attach a message to the build by passing `--message` to the build command, for example, `eas build --platform ios --message "Some message"`. The message will appear on the website. It comes in handy when you want to leave a note with the purpose of the build for your team.
-
-Alternatively, you can use `--platform all` option to build for Android and iOS at the same time:
-
-<Terminal cmd={['$ eas build --platform all']} />
-
-> If you have released your app to stores previously and have existing [app signing credentials](/app-signing/app-credentials/) that you want to use, [follow these instructions to configure them](/app-signing/existing-credentials).
-
-#### Android app signing credentials
-
-- If you have not yet generated a keystore for your app, you can let EAS CLI take care of that for you by selecting `Generate new keystore`, and then you are done. The keystore is stored securely on EAS servers.
-- If you have previously built your app with `expo build:android`, you can use the same credentials here.
-- If you want to manually generate your keystore, see the [manual Android credentials guide](/app-signing/local-credentials#android-credentials) for more information.
-
-#### iOS app signing credentials
-
-- If you have not generated a provisioning profile and/or distribution certificate yet, you can let EAS CLI take care of that for you by signing into your Apple Developer Program account and following the prompts.
-- If you have already built your app with `expo build:ios`, you can use the same credentials here.
-- If you want to rather manually generate your credentials, refer to the [manual iOS credentials guide](/app-signing/local-credentials#ios-credentials) for more information.
-
-</Step>
-
-<Step label="5">
-## Wait for the build to complete
-
-By default, the `eas build` command will wait for your build to complete, but you can interrupt it if you prefer not to wait. Monitor the progress and read the logs by following the link to the build details page that EAS CLI prompts once the build process gets started. You can also find this page by visiting [your build dashboard](https://expo.dev/builds) or running the following command:
-
-<Terminal cmd={['$ eas build:list']} />
-
-If you are a member of an organization and your build is on its behalf, you will find the build details on [the build dashboard for that account](https://expo.dev/accounts/[account]/builds).
-
-> **Did your build fail?** Double check that you followed any applicable instructions in the [configuration step](#3-configure-the-project) and refer to the [troubleshooting guide](/build-reference/troubleshooting) if needed.
-
-</Step>
-
-<Step label="6">
-## Deploy the build
-
-If you have made it to this step, congratulations! Depending on which path you chose, you now either have a build that is ready to upload to an app store, or you have a build that you can install directly on an Android device/iOS Simulator.
-
-### Distribute your app to an app store
-
-You will only be able to submit to an app store if you built specifically for that purpose. If you created a build for a store, [learn how to submit your app to app stores with EAS Submit](/submit/introduction).
-
-### Install and run the app
-
-You will only be able to install the app directly to your Android device/iOS Simulator if you explicitly built it for that purpose. If you built for app store distribution, you will need to upload to an app store and then install it from there (for example, from Apple's TestFlight app).
-
-To learn how to install the app directly to your Android device/iOS Simulator, navigate to your build details page from [your build dashboard](https://expo.dev/accounts/[account]/builds) and click the "Install" button.
-
-</Step>
-
-## Next steps
-
-We walked you through the steps to create your first build with EAS Build without going into too much depth on any particular part of the process.
-
-When you are ready to learn more, we recommend proceeding through the following topics to learn more:
-
-- [Configuration with eas.json](/build/eas-json)
-- [Internal distribution](/build/internal-distribution)
-- [Updates](/build/updates)
-- [Automating submissions](/build/automate-submissions)
-- [Triggering builds from CI](/build/building-on-ci)
-
-You may also want to dig through the reference section to learn more about the topics that interest you most, such as:
-
-- [Build webhooks](/eas/webhooks)
-- [Build server infrastructure](/build-reference/infrastructure)
-- How the [Android](/build-reference/android-builds) and [iOS](/build-reference/ios-builds) build processes work
